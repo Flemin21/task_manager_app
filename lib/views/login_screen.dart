@@ -13,6 +13,7 @@ class LoginScreen extends StatelessWidget {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final _formkey = GlobalKey<FormState>();
+    bool obscureText = true;
 
     return Scaffold(
       body: Form(
@@ -29,6 +30,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 30),
         
                 TextFormField(
+
                   controller: emailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -38,25 +40,37 @@ class LoginScreen extends StatelessWidget {
                   },
                   decoration: const InputDecoration(
                     labelText: "Email",
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+
+                    ),
                     prefixIcon: Icon(Icons.email),
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 25),
         
                 TextFormField(
                   controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  obscureText: obscureText,
+                  decoration: InputDecoration(
                     labelText: "Password",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureText ? Icons.visibility_off : Icons.visibility,
+                          ),
+                          onPressed: () {}
                   ),
                 ),
-                const SizedBox(height: 20),
+                ),
+                 SizedBox(height: 20),
         
                 SizedBox(
-                  width: double.infinity,
+                  height: 40,
+                  width: 300,
                   child: ElevatedButton(
                     onPressed: () async{
                       if(_formkey.currentState!.validate()){
@@ -73,14 +87,18 @@ class LoginScreen extends StatelessWidget {
                         const SnackBar(content: Text("Login pressed")),
                       );
                     },
-                    child: const Text("Login"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white
+                    ),
+                    child: const Text("Login",style: TextStyle(fontSize: 20),),
                   ),
                 ),
                 const SizedBox(height: 10),
         
                 TextButton(
                   onPressed: () {},
-                  child: const Text("Don’t have an account? Sign Up"),
+                  child: const Text("Don’t have an account? Sign Up",style: TextStyle(color: Colors.black),),
                 )
               ],
             ),

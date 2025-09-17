@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_app/bloc/task_manager_bloc.dart';
+import 'package:task_manager_app/views/login_screen.dart';
 import 'package:task_manager_app/views/splash_screen.dart';
 
 void main() {

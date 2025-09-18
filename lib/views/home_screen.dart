@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.grey,
         title: Text("Task Manager App"),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+          //IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
         ],
       ),
       drawer: Drawer(
@@ -247,86 +247,171 @@ class FavouriteTaskPage extends StatelessWidget {
   }
 }
 
-class AddTasksScreen extends StatelessWidget {
+class AddTasksScreen extends StatefulWidget {
   const AddTasksScreen({super.key});
 
   @override
+  State<AddTasksScreen> createState() => _AddTasksScreenState();
+}
+
+class _AddTasksScreenState extends State<AddTasksScreen> {
+  final TextEditingController taskTitleController = TextEditingController();
+  final TextEditingController taskDescriptionController = TextEditingController();
+  final TextEditingController taskDueDateController = TextEditingController();
+
+  final maxTaskTitleLength = 50;
+  final maxTaskDescriptionLength = 500;
+
+  String selectedTaskPriority = "Low";
+
+  @override
   Widget build(BuildContext context) {
-
-    TextEditingController taskTitleController = TextEditingController();
-    TextEditingController taskDescriptionController = TextEditingController();
-    final maxTaskTitleLength = 50;
-    final maxTaskDescriptionLength = 500;
-
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text("Add New Task"),
+        title: const Text("Add New Task"),
         centerTitle: true,
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 maxLength: maxTaskTitleLength,
                 controller: taskTitleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Task Title",
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+
+            const SizedBox(height: 10),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 maxLength: maxTaskDescriptionLength,
                 controller: taskDescriptionController,
-                decoration: InputDecoration(
-
+                decoration: const InputDecoration(
                   labelText: "Task Description",
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+
+            const SizedBox(height: 10),
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: taskDueDateController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: "Task Due Date",
+                  border: const OutlineInputBorder(),
+                  suffixIcon: const Icon(Icons.calendar_today),
+                ),
+                onTap: () async {
+                  DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      taskDueDateController.text =
+                          picked.toIso8601String().split("T").first;
+                    });
+                  }
+                },
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
+                value: selectedTaskPriority,
+                items: ["Low", "Medium", "High"].map((priority) {
+                  return DropdownMenuItem(
+                    value: priority,
+                    child: Text(priority),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedTaskPriority = value!;
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: "Priority",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: ElevatedButton(onPressed: (){
-                },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: Text("Cancel"))),
-                SizedBox(width: 70),
-                Center(child: ElevatedButton(onPressed: (){
-                  final taskTitle = taskTitleController.text.trim();
-                  if(taskTitle.isNotEmpty){
-                    context.read<TaskManagerBloc>().add(AddTaskEvent(taskTitleController.text, taskDescriptionController.text));
+                ElevatedButton(
+                  onPressed: () {
                     Navigator.pop(context);
-                  }else{
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task tile cannot be empty')));
-                  }
-                },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: Text("Save"))),
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text("Cancel"),
+                ),
+
+                const SizedBox(width: 70),
+
+                ElevatedButton(
+                  onPressed: () {
+                    final taskTitle = taskTitleController.text.trim();
+                    if (taskTitle.isNotEmpty) {
+                      context.read<TaskManagerBloc>().add(
+                        AddTaskEvent(
+                          taskTitleController.text,
+                          taskDescriptionController.text,
+                          taskDueDateController.text,
+                          selectedTaskPriority,
+                        ),
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Task title cannot be empty'),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text("Save"),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 
 class TaskDetailsPage extends StatelessWidget {
 

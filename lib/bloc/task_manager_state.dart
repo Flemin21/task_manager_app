@@ -11,7 +11,9 @@ class TasksLoaded extends TaskManagerState {
    List<String> tasks = [];
    List<int> completedTasks = [];
    final List<String> descriptions;
+   List<String> taskDueDate;
+   List<String> taskPriorityStatus;
 
 
-   TasksLoaded(this.tasks, this.completedTasks,this.descriptions);
+   TasksLoaded(this.tasks, this.completedTasks,this.descriptions,this.taskDueDate,this.taskPriorityStatus);
 }

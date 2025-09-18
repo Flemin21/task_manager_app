@@ -14,8 +14,10 @@ class TaskManagerBloc extends Bloc<TaskManagerEvent, TaskManagerState> {
       final tasks = await _taskManager.getTasks();
       final descriptions = await _taskManager.getDescriptions();
       final completedTasks = await _taskManager.getCompleted();
+      final taskDueDate = await _taskManager.getTaskDueDates();
+      final taskPriority = await _taskManager.getTaskPriorityStatus();
 
-      emit(TasksLoaded(tasks, completedTasks, descriptions));
+      emit(TasksLoaded(tasks, completedTasks, descriptions, taskDueDate, taskPriority));
     });
 
     on<AddTaskEvent>((event, emit) async {
@@ -31,7 +33,7 @@ class TaskManagerBloc extends Bloc<TaskManagerEvent, TaskManagerState> {
         await _taskManager.saveDescriptions(updatedDescriptions);
 
         emit(TasksLoaded(
-            updatedTasks, currentState.completedTasks, updatedDescriptions));
+            updatedTasks, currentState.completedTasks, updatedDescriptions, currentState.taskDueDate, currentState.taskPriorityStatus));
       }
     });
 
@@ -49,7 +51,7 @@ class TaskManagerBloc extends Bloc<TaskManagerEvent, TaskManagerState> {
         await _taskManager.saveCompleted(completedTasks);
 
         emit(TasksLoaded(
-            currentState.tasks, completedTasks, currentState.descriptions));
+            currentState.tasks, currentState.completedTasks, currentState.descriptions,currentState.taskDueDate,currentState.taskPriorityStatus));
       }
     });
 
@@ -74,7 +76,7 @@ class TaskManagerBloc extends Bloc<TaskManagerEvent, TaskManagerState> {
         await _taskManager.saveCompleted(updatedCompletedTasks);
 
         emit(TasksLoaded(
-            updatedTasks, updatedCompletedTasks, updatedDescriptions));
+            updatedTasks, updatedCompletedTasks, updatedDescriptions, currentState.taskDueDate, currentState.taskPriorityStatus));
       }
     });
   }

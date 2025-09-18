@@ -10,7 +10,9 @@ class AddTaskEvent extends TaskManagerEvent {
 
   late final String title;
   late final String description;
-  AddTaskEvent(this.title, this.description);
+  final String taskDueDate;
+  final String taskPriorityStatus;
+  AddTaskEvent(this.title, this.description, this.taskDueDate, this.taskPriorityStatus);
 }
 
 // Toggle Tasks (Completed / Uncompleted)

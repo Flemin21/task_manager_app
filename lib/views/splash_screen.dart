@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:task_manager_app/services/login_manager.dart';
 
 import 'home_screen.dart';
@@ -20,13 +22,9 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isLoggedIn = await loginManager.isLoggedIn();
 
     if(isLoggedIn == true){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-        return HomeScreen();
-      } ));
+     context.go('/home');
     }else{
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-        return LoginScreen();
-      } ));
+      context.go('/login');
     }
   }
 
@@ -46,8 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Image.asset(
           "assets/logo/task_manager_logo.jpg",
-          height: 200,
-          width: 200,
+          height: 200.h,
+          width: 200.w,
           fit: BoxFit.fill,
         ),
       ),

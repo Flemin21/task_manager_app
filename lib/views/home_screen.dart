@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:task_manager_app/bloc/task_manager_bloc.dart';
+import 'package:task_manager_app/services/tasks_manager.dart';
 
 import 'login_screen.dart';
 
@@ -67,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-                  return LoginScreen();
-                } ));
+                context.go('/login');
               },
             ),
           ],
@@ -148,7 +148,10 @@ class PendingTaskPage extends StatelessWidget {
                   elevation: 2,
                   child: ListTile(
                     title: Text(tasks[taskIndex]),
-                    //subtitle: Text(state.descriptions[taskIndex]),
+                    subtitle: Text(state.descriptions.length > taskIndex ? state.descriptions[taskIndex] : "",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     leading: Checkbox(value: false, onChanged: (_) {
                       context.read<TaskManagerBloc>().add(ToggleTasksEvent(
                           taskIndex));
@@ -157,6 +160,7 @@ class PendingTaskPage extends StatelessWidget {
                       context.read<TaskManagerBloc>().add(DeleteTasksEvent(
                           taskIndex));
                     }, icon: Icon(Icons.delete)),
+                      onTap: () {}
                   ),
                 ),
               );
@@ -323,5 +327,37 @@ class AddTasksScreen extends StatelessWidget {
     );
   }
 }
+
+class TaskDetailsPage extends StatelessWidget {
+
+  final Map<String, String> task;
+  const TaskDetailsPage({super.key, required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text("Task Details",style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
